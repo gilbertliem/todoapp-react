@@ -1,103 +1,129 @@
-import React, { Component } from "react";
+// FUNCTION COMPONENT //
+
+import React, { useState, useEffect } from "react";
 import Header from "./component/Header"; // mangambil component header dari file header
 import Todo from "./component/Todo";
+import List from "./component/List";
 import "./App.css";
-// import { render } from "@testing-library/react";
-// import logo from './logo.svg';
 
 // ================================ //
 
-export default class App extends Component {
-  // extends component = memberikan akses class untuk bisa pakai tools dari component
-  state = {
-    todos: [
-      {
-        text: "Todo 1",
-        completed: false,
-        date: new Date(),
-        edit: false,
-      },
-    ],
-  };
-
-  addTodos = (value) => {
-    // console.log(value);
-    this.setState({
-      todos: [
-        ...this.state.todos,
-        {
-          text: value,
-          completed: false,
-          date: new Date(),
-          edit: false,
-        },
-      ],
-    });
-  };
-
-  removeTodos = (id) => {
-    let newTodos = this.state.todos;
-    newTodos.splice(id, 1);
-    this.setState({ todos: newTodos });
-  };
-
-  handleEdit = (val, i) => {
-    const edited = this.state.todos;
-    if (val === null) {
-      edited[i].edit = true;
-    } else {
-      edited[i].edit = true;
-      edited[i].text = val;
+function App() {
+  // STATE
+  const [text, setText] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [status, setStatus] = useState("all");
+  const [filteredTodos, setFilteredTodos] = useState([]);
+  // USE EFFECT
+  useEffect(() => {
+    getLocalStorage();
+  }, []);
+  // USE EFFECT
+  useEffect(() => {
+    filterHandler();
+    saveLocalStorage();
+  }, [todos, status]);
+  // FUNCTION
+  const filterHandler = () => {
+    switch (status) {
+      case "completed":
+        setFilteredTodos(todos.filter((todo) => todo.completed === true));
+        break;
+      case "uncompleted":
+        setFilteredTodos(todos.filter((todo) => todo.completed === false));
+        break;
+      default:
+        setFilteredTodos(todos);
     }
-    this.setState({ todo: edited });
+  };
+  // SAVE TO LOCAL STORAGE
+  const saveLocalStorage = () => {
+    localStorage.setItem("todos", JSON.stringify(todos));
   };
 
-  completed = (i) => {
-    const edited = this.state.todos;
-    edited[i].completed = !edited[i].completed;
-    this.setState({ todo: edited });
+  const getLocalStorage = () => {
+    if (localStorage.getItem("todos") === null) {
+      localStorage.setItem("todos", JSON.stringify([]));
+    } else {
+      let todosLocal = JSON.parse(localStorage.getItem("todos"));
+      setTodos(todosLocal);
+    }
   };
 
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        <Todo
-          todos={this.todos}
-          addTodos={this.addTodos}
-          removeTodos={this.removeTodos}
-          handleEdit={this.handleEdit}
-          completed={this.completed}
-        />
-      </div>
-    );
-  }
+  // RENDER
+  return (
+    <div className="App">
+      <Header />
+      <Todo
+        text={text}
+        setText={setText}
+        todos={todos}
+        setTodos={setTodos}
+        status={status}
+        setStatus={setStatus}
+      />
+      <List todos={todos} setTodos={setTodos} filteredTodos={filteredTodos} />
+    </div>
+  );
 }
 
-// export default App = memberikan akses agar file lain bisa pakai component app
-// addTodos = (value) => {
-//   this.setState({
-//     todos: [
-//       ...this.state.todos,
-//       {
-//         text: value,
-//         completed: false,
-//         date: new Date(),
-//       },
-//     ],
-//   });
-// };
+export default App;
 
-// removeTodos = (id) => {
-//   const newTodos = this.state.todos.filter((todo) => todo.id !== id);
-//   this.setState({
-//     todos: newTodos,
-//   });
-// };
+// CLASS COMPONENT //
 
-// 1. kalo data (state) mau diakses ke lebih dari satu component, maka data (state) harus ada di parent
-// 2. state hanya bisa diubah melalui dirinya sendiri, berarti
-// baris 50:
-// todos dan addTodos = atributte(props) berguna untuk pass data atau function ke component lain
+// import React, { Component } from "react";
+// import Header from "./component/Header"; // mangambil component header dari file header
+// import Todo from "./component/Todo";
+// // import List from "./component/List";
+// import "./App.css";
 
-// event dipakai ketika user melakukan sesuatu (user klik button, ketik tulisan di input, dll). event bentuknya object.
+// // ================================ //
+
+// export default class App extends Component {
+//   // STATE
+//   state = {
+//     text: "",
+//     todos: [],
+//     status: "all",
+//     filteredTodos: [],
+//   };
+//   // FUNCTION
+//   inputHandler = (e) => {
+//     console.log(e.target.value);
+//     this.setText(e.target.value);
+//   };
+
+//   addHandler = (text) => {
+//     // text.preventDefault();
+//     this.setTodos({
+//       todos: [
+//         ...this.state.todos,
+//         {
+//           text,
+//           date: new Date(),
+//           completed: false,
+//           id: Math.random(),
+//         },
+//       ],
+//     });
+//     this.setText("");
+//   };
+
+//   // RENDER
+//   render() {
+//     console.log(this.state.todos);
+//     return (
+//       <div className="App">
+//         <Header />
+//         <Todo
+//           inputHandler={this.inputHandler}
+//           text={this.state.text}
+//           // todos={this.state.todos}
+//           // status={this.state.status}
+//           // filteredTodos={this.state.filteredTodos}
+//         />
+//         {/* <List todos={todos} setTodos={setTodos} filteredTodos={filteredTodos} /> */}
+//       </div>
+//     );
+//   }
+// }

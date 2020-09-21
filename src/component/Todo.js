@@ -1,46 +1,79 @@
-import React, { Component } from "react";
-import List from "./List.js";
+// FUNCTION COMPONENT //
+
+import React from "react";
 
 // ================================ //
 
-class Todo extends Component {
-  state = {
-    value: "",
+const Todo = ({ setTodos, todos, setText, text, setStatus }) => {
+  // FUNCTION
+  const inputHandler = (e) => {
+    // console.log(e.target.value);
+    setText(e.target.value);
+  };
+  const addHandler = (e) => {
+    e.preventDefault();
+    setTodos([
+      ...todos,
+      {
+        text: text,
+        date: new Date(),
+        completed: false,
+        id: Math.random(),
+        edit: false,
+      },
+    ]);
+    setText("");
+  };
+  const statusHandler = (e) => {
+    // console.log(e.target.value);
+    setStatus(e.target.value);
   };
 
-  render() {
-    return (
-      <div>
-        <input
-          type="text"
-          onChange={(e) => this.setState({ value: e.target.value })}
-        />
-        <button onClick={() => this.props.addTodos(this.state.value)}>
-          Add
-        </button>
-        <List
-          todos={this.props.todos}
-          addTodos={this.props.addTodos}
-          removeTodos={this.props.removeTodos}
-          handleEdit={this.props.handleEdit}
-          completed={this.props.completed}
-        />
-      </div>
-    );
-  }
-}
+  // RENDER
+
+  return (
+    <div>
+      <input value={text} type="text" onChange={inputHandler} />
+      <button onClick={addHandler}>Add</button>
+      <select onChange={statusHandler} name="todos" id="">
+        <option value="all">All</option>
+        <option value="completed">Completed</option>
+        <option value="uncompleted">Uncompleted</option>
+      </select>
+    </div>
+  );
+};
 
 export default Todo;
 
-// const Todo = ({ todos, addTodos, removeTodos }) => {
-// const [text, setText] = useState("");
+// CLASS COMPONENT //
 
-// const handleChange = (e) => {
-//   const val = e.target.value;
-//   setText(val);
-// };
+// import React, { Component } from "react";
 
-// const handleSubmit = () => {
-//   addTodos(text);
-//   setText("");
-// };
+// // ================================ //
+
+// export default class Todo extends Component {
+//   // FUNCTION
+
+//   // RENDER
+//   render() {
+//     return (
+//       <div>
+//         <input onChange={this.inputHandler} type="text" />
+//         <button>Add</button>
+//         <select name="" id="">
+//           <option value="all">All</option>
+//           <option value="completed">Completed</option>
+//           <option value="uncompleted">Uncompleted</option>
+//         </select>
+//         {/* <input value={text} type="text" onChange={inputHandler} /> */}
+//         {/* <button onClick={addHandler}>Add</button> */}
+//         {/* <select onChange={statusHandler} name="todos" id=""> */}
+//         {/* <option value="all">All</option> */}
+//         {/* <option value="completed">Completed</option> */}
+//         {/* <option value="uncompleted">Uncompleted</option> */}
+//         {/* </select> */}
+//       </div>
+//     );
+//   }
+// }

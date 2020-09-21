@@ -1,56 +1,57 @@
-import React, { Component } from "react";
-// import Todo from "./Todo";
+// FUNCTION COMPONENT //
+import React from "react";
+import Element from "./Element";
 
 // ================================ //
 
-export default class List extends Component {
-  state = {
-    value: "",
-  };
+const List = ({ todos, setTodos, filteredTodos }) => {
+  console.log(todos);
 
-  handleEdit = (val, i) => {
-    this.setState({ value: val });
-    this.props.handleEdit(null, i);
-  };
+  // const editHandler = (id) => {
+  //   const newTodos = todos;
+  //   const todo = newTodos.find((todo) => todo.id === id);
+  //   todo.edit = !todo.edit;
 
-  render() {
-    return (
+  // };
+
+  // RENDER
+  return (
+    <div className="list">
       <ul>
-        {this.props.todos.map((el, id) => (
-          <li>
-            {!el.edit ? (
-              el.completed ? (
-                <s>
-                  {el.text}
-                  <span onClick={() => this.props.removeTodos(id)}>X</span>
-                  <span onClick={() => this.handleEdit(el.text, id)}>Edit</span>
-                  <span onClick={() => this.handleEdit(el.text, id)}>
-                    Complete
-                  </span>
-                </s>
-              ) : (
-                <>
-                  {el.text}
-                  <span onClick={() => this.props.removeTodos(id)}>X</span>
-                  <span onClick={() => this.handleEdit(el.text, id)}>Edit</span>
-                  <span onClick={() => this.props.complete(id)}>Complete</span>
-                </>
-              )
-            ) : (
-              <>
-                <input
-                  type="text"
-                  value={this.state.value}
-                  onChange={(e) => this.setState({ value: e.target.value })}
-                />
-                <button onClick={() => this.props.edit(this.state.value, id)}>
-                  Save
-                </button>
-              </>
-            )}
-          </li>
+        {filteredTodos.map((todo) => (
+          <Element
+            key={todo.id}
+            todos={todos}
+            todo={todo}
+            setTodos={setTodos}
+          />
         ))}
       </ul>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default List;
+
+// CLASS COMPONENT //
+
+// import React, { Component } from "react";
+
+// export default class Todo extends Component {
+//   render() {
+//     return (
+//       <div className="list">
+//         <ul>
+//           {/* {filteredTodos.map((todo) => (
+//           <Element
+//             key={todo.id}
+//             todos={todos}
+//             todo={todo}
+//             setTodos={setTodos}
+//           />
+//         ))} */}
+//         </ul>
+//       </div>
+//     );
+//   }
+// }
